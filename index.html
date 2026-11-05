@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f7f5f0">
+  <title>منوی دیجیتال</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#"><span class="brand-mark">M</span><span id="brandName">منوی کافه</span></a>
+    <div class="top-actions">
+      <button id="qrBtn" class="icon-btn" title="QR Code" aria-label="QR Code">▦</button>
+      <button id="loginBtn" class="button button-light">ورود ادمین</button>
+      <button id="logoutBtn" class="button button-light hidden">خروج</button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <p class="eyebrow">خوش آمدید</p>
+      <h1>طعم‌های مورد علاقه‌تان<br><span>اینجا منتظر شما هستند.</span></h1>
+      <p class="hero-copy">منوی به‌روز کافه را ببینید و انتخاب کنید.</p>
+      <div class="hero-line"></div>
+    </section>
+
+    <section id="menuArea">
+      <div id="pageTabs" class="page-tabs" aria-label="صفحات منو"></div>
+      <div class="section-heading">
+        <div><p class="eyebrow">منوی ما</p><h2 id="currentPageTitle">در حال بارگذاری...</h2></div>
+        <span id="itemCount" class="muted"></span>
+      </div>
+      <div id="menuGrid" class="menu-grid"><div class="empty">در حال دریافت منو...</div></div>
+    </section>
+
+    <section id="adminPanel" class="admin-panel hidden">
+      <div class="admin-heading"><div><p class="eyebrow">مدیریت</p><h2>پنل ادمین</h2></div><span class="admin-pill">دسترسی مدیر</span></div>
+      <div class="admin-columns">
+        <form id="pageForm" class="panel-card">
+          <h3>ساخت صفحه منو</h3>
+          <label>نام صفحه<input id="pageName" required maxlength="60" placeholder="مثلاً نوشیدنی‌های گرم"></label>
+          <label>توضیحات کوتاه<input id="pageDescription" maxlength="140" placeholder="توضیح اختیاری"></label>
+          <button class="button button-dark" type="submit">افزودن صفحه</button>
+          <div id="pagesManage" class="manage-list"></div>
+        </form>
+        <form id="itemForm" class="panel-card">
+          <h3 id="itemFormTitle">افزودن محصول</h3>
+          <input id="itemId" type="hidden">
+          <label>صفحه منو<select id="itemPage" required></select></label>
+          <label>نام محصول<input id="itemName" required maxlength="100" placeholder="مثلاً کاپوچینو"></label>
+          <label>توضیحات<input id="itemDescription" maxlength="220" placeholder="توضیح کوتاه محصول"></label>
+          <div class="form-row">
+            <label>قیمت<input id="itemPrice" type="number" min="0" step="1" required placeholder="85000"></label>
+            <label>واحد پول<input id="currency" value="تومان" maxlength="12"></label>
+          </div>
+          <label>تصویر محصول<input id="itemImage" type="file" accept="image/*"></label>
+          <label class="check-label"><input id="itemAvailable" type="checkbox" checked> محصول موجود است</label>
+          <div class="form-row"><button class="button button-dark" type="submit">ذخیره محصول</button><button id="cancelEdit" class="button button-light hidden" type="button">لغو ویرایش</button></div>
+          <div id="itemsManage" class="manage-list"></div>
+        </form>
+      </div>
+      <div class="panel-card qr-admin"><div><h3>QR Code منو</h3><p class="muted">این کد را چاپ کنید تا مشتری مستقیماً منو را باز کند.</p></div><div id="adminQr"></div></div>
+    </section>
+  </main>
+
+  <footer><span id="footerName">منوی دیجیتال</span><span>با سادگی، برای انتخاب بهتر</span></footer>
+
+  <dialog id="authDialog" class="dialog">
+    <form id="authForm" method="dialog">
+      <button class="close-btn" type="button" data-close="authDialog">×</button>
+      <p class="eyebrow">مدیریت منو</p><h2>ورود ادمین</h2>
+      <p class="muted">با حساب مدیریتی وارد شوید.</p>
+      <label>ایمیل<input id="authEmail" type="email" autocomplete="username" required placeholder="admin@example.com"></label>
+      <label>رمز عبور<input id="authPassword" type="password" autocomplete="current-password" required></label>
+      <button class="button button-dark full" type="submit">ورود</button>
+      <p id="authMessage" class="form-message"></p>
+    </form>
+  </dialog>
+
+  <dialog id="qrDialog" class="dialog qr-dialog">
+    <button class="close-btn" type="button" data-close="qrDialog">×</button>
+    <p class="eyebrow">دسترسی سریع</p><h2>اسکن کنید و منو را ببینید</h2>
+    <div id="customerQr"></div><p class="muted">لینک همین صفحه را با دوربین موبایل اسکن کنید.</p>
+    <button id="copyLink" class="button button-light">کپی لینک منو</button>
+  </dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="config.js"></script><script src="app.js"></script>
+</body>
+</html>

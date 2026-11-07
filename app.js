@@ -14,7 +14,7 @@ async function loadData(){
     {id:"d2",page_id:"demo",name:"لاته",description:"ترکیب متعادل اسپرسو و شیر",price:90000,currency:"تومان",available:true,image_url:""},
     {id:"d3",page_id:"demo",name:"چیزکیک",description:"دسر روز کافه",price:120000,currency:"تومان",available:false,image_url:""}
   ];render();return}
-  const [p,i]=await Promise.all([sb.from("menu_pages").select("*").eq("is_published",true).order("sort_order"),sb.from("menu_items").select("*").order("sort_order")]);
+  const [p,i]=await Promise.all([sb.from("menu_pages").select("*").order("sort_order"),sb.from("menu_items").select("*").order("sort_order")]);
   if(p.error||i.error){toast("دریافت منو با خطا مواجه شد.");console.error(p.error||i.error);return}
   pages=p.data||[];items=i.data||[];if(!activePage||!pages.some(x=>x.id===activePage))activePage=pages[0]?.id||null;render();
 }

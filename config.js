@@ -3,6 +3,6 @@
 window.MENU_CONFIG = {
   SUPABASE_URL: "https://zzaitknhnlnndlaqiwkg.supabase.co",
   SUPABASE_ANON_KEY: "sb_publishable_0QXNder94RfiapSPdw4m3A_iSaSAWjM",
-  CAFE_NAME: "منوی دیجیتال",
+  CAFE_NAME: "Misooo Cafe",
   CURRENCY: "تومان"
 };

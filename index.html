@@ -6,7 +6,7 @@
   <title>Misooo Cafe</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
@@ -14,6 +14,7 @@
   <header class="topbar">
     <a class="brand" href="#"><span class="brand-mark">M</span><span id="brandName">Misooo Cafe</span></a>
     <div class="top-actions">
+      <button id="cartBtn" class="button button-dark" type="button">سبد خرید <span id="cartCount">۰</span></button>
       <button id="qrBtn" class="icon-btn" title="QR Code" aria-label="QR Code">▦</button>
       <button id="loginBtn" class="button button-light">ورود ادمین</button>
       <button id="logoutBtn" class="button button-light hidden">خروج</button>
@@ -37,7 +38,13 @@
       <div id="menuGrid" class="menu-grid"><div class="empty">در حال دریافت منو...</div></div>
     </section>
 
+    <section id="cartBar" class="cart-bar hidden"><span id="cartSummary">سبد خرید خالی است</span><button id="openCart" class="button button-dark">مشاهده سبد</button></section>
     <section id="adminPanel" class="admin-panel hidden">
+      <nav class="admin-nav"><button class="admin-nav-btn active" data-admin-tab="menu">مدیریت منو</button><button class="admin-nav-btn" data-admin-tab="orders">سفارشات <span id="pendingCount"></span></button><button class="admin-nav-btn" data-admin-tab="reports">گزارش فروش</button></nav>
+      <div id="adminOrders" class="admin-tab hidden"><div class="section-heading"><div><p class="eyebrow">مدیریت سفارش‌ها</p><h2>سفارشات</h2></div><span class="muted">به‌روزرسانی هر ۶۰ ثانیه</span></div><div id="ordersList" class="orders-list">در حال بارگذاری…</div>
+      <div class="panel-card"><h3>تسویه گروهی</h3><p class="muted">سفارش‌های تأییدشده را انتخاب کنید.</p><div id="groupOrderList"></div><div class="form-row"><label>نقدی<input id="groupCash" type="number" min="0" value="0"></label><label>کارت<input id="groupCard" type="number" min="0" value="0"></label></div><button id="settleGroup" class="button button-dark">تسویه سفارش‌های انتخابی</button></div></div>
+      <div id="adminReports" class="admin-tab hidden"><div class="section-heading"><div><p class="eyebrow">گزارش روزانه</p><h2>فروش امروز</h2></div></div><div id="reportSummary" class="report-grid"></div><div class="panel-card"><h3>محصولات فروخته‌شده</h3><div id="productReport"></div><button id="downloadReport" class="button button-dark">دانلود گزارش TXT</button><button id="closeBusinessDay" class="button button-light">بستن روز و آرشیو سفارش‌ها</button></div><div id="archiveMessage" class="muted"></div></div>
+      <div id="adminMenu" class="admin-tab">
       <div class="admin-heading"><div><p class="eyebrow">مدیریت</p><h2>پنل ادمین</h2></div><span class="admin-pill">دسترسی مدیر</span></div>
       <div class="admin-columns">
         <form id="pageForm" class="panel-card">
@@ -63,12 +70,13 @@
           <div id="itemsManage" class="manage-list"></div>
         </form>
       </div>
-      <div class="panel-card qr-admin"><div><h3>QR Code منو</h3><p class="muted">این کد را چاپ کنید تا مشتری مستقیماً منو را باز کند.</p></div><div id="adminQr"></div></div>
+      <div class="panel-card qr-admin"><div><h3>QR Code منو</h3><p class="muted">این کد را چاپ کنید تا مشتری مستقیماً منو را باز کند.</p></div><div id="adminQr"></div></div></div>
     </section>
   </main>
 
   <footer><span id="footerName">Misooo Cafe</span><span>با سادگی، برای انتخاب بهتر</span></footer>
 
+  <dialog id="cartDialog" class="dialog wide-dialog"><button class="close-btn" type="button" data-close="cartDialog">×</button><p class="eyebrow">سفارش شما</p><h2>سبد خرید</h2><div id="cartLines"></div><div class="cart-total">جمع کل: <strong id="cartTotal"></strong></div><form id="checkoutForm"><label>نام مشتری<input id="customerName" required maxlength="80" placeholder="نام شما"></label><button class="button button-dark full" type="submit">ثبت سفارش</button><p id="checkoutMessage" class="form-message"></p></form></dialog>
   <dialog id="authDialog" class="dialog">
     <form id="authForm" method="dialog">
       <button class="close-btn" type="button" data-close="authDialog">×</button>
@@ -89,6 +97,6 @@
   </dialog>
 
   <div id="toast" class="toast" role="status"></div>
-  <script src="config.js"></script><script src="app.js"></script>
+  <script src="config.js"></script><script src="app.js"></script><script>if("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("./sw.js").catch(()=>{});</script>
 </body>
 </html>

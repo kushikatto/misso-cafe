@@ -1,4 +1,4 @@
--- Misooo Cafe orders, mixed payments, daily reports and safe archive
+-- Misu orders, mixed payments, daily reports; archiving preserves original orders
 create extension if not exists pgcrypto;
 create table if not exists public.orders (
  id uuid primary key default gen_random_uuid(), customer_name text not null,
@@ -99,6 +99,6 @@ begin
  insert into public.daily_sales_summaries(day,order_count,gross_total,cash_total,card_total,products)
  values(p_day,v_count,v_gross,v_cash,v_card,v_products)
  on conflict(day) do update set order_count=excluded.order_count,gross_total=excluded.gross_total,cash_total=excluded.cash_total,card_total=excluded.card_total,products=excluded.products,archived_at=now();
- delete from public.orders where order_day=p_day and status='paid';
+ -- Keep original orders and order_items for audit/history; do not delete sales records.
 end; $$;
 grant execute on function public.archive_cafe_day(date) to authenticated;

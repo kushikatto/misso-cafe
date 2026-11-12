@@ -2,8 +2,8 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#f7f5f0">
-  <title>Misooo Cafe</title>
+  <meta name="theme-color" content="#f5eee5">
+  <title>Misu | کافه رستوران میسو</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="styles.css">
@@ -12,7 +12,10 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#"><span class="brand-mark">M</span><span id="brandName">Misooo Cafe</span></a>
+    <a class="brand" href="#about" aria-label="درباره میسو">
+      <img class="brand-logo" src="assets/misu-logo.jpg" alt="لوگوی کافه رستوران میسو">
+      <span id="brandName">Misu</span>
+    </a>
     <div class="top-actions">
       <button id="cartBtn" class="button button-dark" type="button">سبد خرید <span id="cartCount">۰</span></button>
       <button id="qrBtn" class="icon-btn" title="QR Code" aria-label="QR Code">▦</button>
@@ -40,10 +43,63 @@
 
     <section id="cartBar" class="cart-bar hidden"><span id="cartSummary">سبد خرید خالی است</span><button id="openCart" class="button button-dark">مشاهده سبد</button></section>
     <section id="adminPanel" class="admin-panel hidden">
-      <nav class="admin-nav"><button class="admin-nav-btn active" data-admin-tab="menu">مدیریت منو</button><button class="admin-nav-btn" data-admin-tab="orders">سفارشات <span id="pendingCount"></span></button><button class="admin-nav-btn" data-admin-tab="reports">گزارش فروش</button></nav>
+      <nav class="admin-nav"><button class="admin-nav-btn active" data-admin-tab="menu">مدیریت منو</button><button class="admin-nav-btn" data-admin-tab="orders">سفارشات <span id="pendingCount"></span></button><button class="admin-nav-btn" data-admin-tab="reports">گزارش فروش</button><button class="admin-nav-btn" data-admin-tab="features">امکانات تکمیلی</button></nav>
       <div id="adminOrders" class="admin-tab hidden"><div class="section-heading"><div><p class="eyebrow">مدیریت سفارش‌ها</p><h2>سفارشات</h2></div><span class="muted">به‌روزرسانی هر ۶۰ ثانیه</span></div><div id="ordersList" class="orders-list">در حال بارگذاری…</div>
       <div class="panel-card"><h3>تسویه گروهی</h3><p class="muted">سفارش‌های تأییدشده را انتخاب کنید.</p><div id="groupOrderList"></div><div class="form-row"><label>نقدی<input id="groupCash" type="number" min="0" value="0"></label><label>کارت<input id="groupCard" type="number" min="0" value="0"></label></div><button id="settleGroup" class="button button-dark">تسویه سفارش‌های انتخابی</button></div></div>
       <div id="adminReports" class="admin-tab hidden"><div class="section-heading"><div><p class="eyebrow">گزارش روزانه</p><h2>فروش امروز</h2></div></div><div id="reportSummary" class="report-grid"></div><div class="panel-card"><h3>محصولات فروخته‌شده</h3><div id="productReport"></div><button id="downloadReport" class="button button-dark">دانلود گزارش TXT</button><button id="closeBusinessDay" class="button button-light">بستن روز و آرشیو سفارش‌ها</button></div><div id="archiveMessage" class="muted"></div></div>
+
+      <div id="adminFeatures" class="admin-tab hidden">
+        <div class="section-heading"><div><p class="eyebrow">مدیریت پیشرفته</p><h2>امکانات تکمیلی</h2></div></div>
+        <div class="admin-columns">
+          <form id="extraForm" class="panel-card">
+            <h3>افزودنی‌ها</h3>
+            <label>نام افزودنی<input id="extraName" required maxlength="80" placeholder="مثلاً سیروپ یا عسل"></label>
+            <label>قیمت ثابت برای هر نوع افزودنی<input id="extraPrice" type="number" min="0" value="0" required></label>
+            <label>حداکثر تعداد در هر سفارش (خالی = نامحدود)<input id="extraLimit" type="number" min="1"></label>
+            <label>اتصال به محصولات<select id="extraProducts" multiple size="5"></select></label>
+            <button class="button button-dark" type="submit">ثبت افزودنی و اتصال به محصولات</button><div id="extrasManage" class="manage-list"></div>
+          </form>
+          <form id="discountForm" class="panel-card">
+            <h3>تخفیف محصول</h3>
+            <label>محصول<select id="discountProduct" required></select></label>
+            <label>درصد تخفیف<input id="discountPercent" type="number" min="1" max="100" required></label>
+            <label>شروع تخفیف<input id="discountStart" type="datetime-local"></label>
+            <label>پایان تخفیف<input id="discountEnd" type="datetime-local"></label>
+            <button class="button button-dark" type="submit">ثبت تخفیف</button><div id="discountsManage" class="manage-list"></div>
+          </form>
+          <form id="couponForm" class="panel-card">
+            <h3>کد تخفیف کل سفارش</h3>
+            <label>کد<input id="couponCode" required maxlength="32"></label>
+            <label>نوع تخفیف<select id="couponType"><option value="percent">درصدی</option><option value="fixed">مبلغ ثابت</option></select></label>
+            <label>مقدار تخفیف<input id="couponValue" type="number" min="1" required></label>
+            <label>سقف استفاده<input id="couponLimit" type="number" min="1" placeholder="خالی = نامحدود"></label>
+            <label>شروع<input id="couponStart" type="datetime-local"></label><label>پایان<input id="couponEnd" type="datetime-local"></label>
+            <button class="button button-dark" type="submit">ساخت کد تخفیف</button><div id="couponsManage" class="manage-list"></div>
+          </form>
+          <form id="eventForm" class="panel-card">
+            <h3>ساخت رویداد</h3>
+            <label>عنوان<input id="eventTitle" required maxlength="120"></label>
+            <label>توضیحات<textarea id="eventDescription" rows="3"></textarea></label>
+            <label>آدرس تصویر<input id="eventImage" type="url" placeholder="https://..."></label>
+            <label>شروع<input id="eventStart" type="datetime-local"></label><label>پایان<input id="eventEnd" type="datetime-local"></label>
+            <label>حداقل شرکت‌کننده<input id="eventMinimum" type="number" min="1" value="1"></label>
+            <label>درصد پیش‌پرداخت<input id="eventPrepay" type="number" min="0" max="100" value="0"></label>
+            <button class="button button-dark" type="submit">ایجاد رویداد</button><div id="eventsManage" class="manage-list"></div>
+          </form>
+        </div>
+        <div class="panel-card"><h3>پیشنهادهای آهنگ</h3><div id="musicManage" class="manage-list"></div></div>
+
+        <div class="panel-card"><h3>شرکت‌کنندگان و اقلام دستی رویداد</h3>
+          <label>انتخاب رویداد<select id="eventAdminSelect"></select></label>
+          <div id="eventAttendees" class="manage-list"></div>
+          <form id="eventManualForm" class="form-row">
+            <label>شرح قلم دستی<input id="manualItemTitle" required placeholder="مثلاً کیک خریداری‌شده"></label>
+            <label>مبلغ<input id="manualItemPrice" type="number" min="0" required></label>
+            <button class="button button-dark" type="submit">ثبت قلم دستی رویداد</button>
+          </form><div id="eventManualList" class="manage-list"></div>
+        </div>
+        <div class="panel-card"><h3>وضعیت پرداخت رویدادها</h3><p class="muted">درگاه پرداخت هنوز غیرفعال است. پس از انتخاب شرکت پرداخت و ثبت کلیدهای محرمانه در سمت سرور، اتصال آن فعال می‌شود.</p><strong id="eventPaymentState">غیرفعال — پرداخت دستی/توافقی</strong></div>
+      </div>
       <div id="adminMenu" class="admin-tab">
       <div class="admin-heading"><div><p class="eyebrow">مدیریت</p><h2>پنل ادمین</h2></div><span class="admin-pill">دسترسی مدیر</span></div>
       <div class="admin-columns">
@@ -74,9 +130,43 @@
     </section>
   </main>
 
-  <footer><span id="footerName">Misooo Cafe</span><span>با سادگی، برای انتخاب بهتر</span></footer>
 
-  <dialog id="cartDialog" class="dialog wide-dialog"><button class="close-btn" type="button" data-close="cartDialog">×</button><p class="eyebrow">سفارش شما</p><h2>سبد خرید</h2><div id="cartLines"></div><div class="cart-total">جمع کل: <strong id="cartTotal"></strong></div><form id="checkoutForm"><label>نام مشتری<input id="customerName" required maxlength="80" placeholder="نام شما"></label><button class="button button-dark full" type="submit">ثبت سفارش</button><p id="checkoutMessage" class="form-message"></p></form></dialog>
+  <section id="eventsArea" class="shell public-extra">
+    <div class="section-heading"><div><p class="eyebrow">دورهمی‌های میسو</p><h2>رویدادهای پیش‌رو</h2></div></div>
+    <div id="publicEvents" class="event-grid"><p class="muted">در حال دریافت رویدادها…</p></div>
+    <form id="musicForm" class="panel-card music-form">
+      <h3>پیشنهاد آهنگ</h3><p class="muted">دوست دارید چه آهنگی در کافه پخش شود؟</p>
+      <div class="form-row"><label>نام شما<input id="musicName" maxlength="80" placeholder="اختیاری"></label><label>نام آهنگ<input id="musicSong" required maxlength="120"></label></div>
+      <label>خواننده<input id="musicArtist" maxlength="120"></label><button class="button button-dark" type="submit">ارسال پیشنهاد</button><p id="musicMessage" class="form-message"></p>
+    </form>
+  </section>
+  <dialog id="eventRegisterDialog" class="dialog">
+    <form id="eventRegisterForm">
+      <button class="close-btn" type="button" data-close="eventRegisterDialog">×</button>
+      <h2>ثبت‌نام رویداد</h2><input id="registerEventId" type="hidden">
+      <label>نام و نام خانوادگی<input id="registerName" required maxlength="80"></label>
+      <label>شماره تماس<input id="registerPhone" required maxlength="24" inputmode="tel"></label>
+      <label>تعداد نفرات<input id="registerCount" type="number" min="1" max="30" value="1" required></label>
+      <button class="button button-dark full" type="submit">ثبت درخواست حضور</button><p id="eventRegisterMessage" class="form-message"></p>
+    </form>
+  </dialog>
+  <section id="about" class="about-section shell">
+    <img class="about-logo" src="assets/misu-logo.jpg" alt="لوگوی کافه رستوران میسو">
+    <p class="eyebrow">درباره ما</p>
+    <h2>کافه رستوران میسو</h2>
+    <p>خوشحالیم که میسو را برای لحظات خوش خود انتخاب کرده‌اید.</p>
+    <div class="about-details">
+      <p><strong>نشانی:</strong> تهران، کارگر شمالی، بین خیابان صادقی و دکتر فاطمی، بازارچه لاله</p>
+      <p><strong>تلفن ثابت:</strong> <a href="tel:02186052055">۰۲۱-۸۶۰۵۲۰۵۵</a></p>
+      <p><strong>مدیریت:</strong> <a href="tel:09121988440">۰۹۱۲۱۹۸۸۴۴۰</a></p>
+      <p><strong>اینستاگرام:</strong> <a href="https://www.instagram.com/misu_cafe_rastaurant" target="_blank" rel="noopener">@misu_cafe_rastaurant</a></p>
+    </div>
+  </section>
+  <footer><span id="footerName">Misu</span><a href="#about">درباره میسو</a><span>با سادگی، برای انتخاب بهتر</span></footer>
+
+  <dialog id="cartDialog" class="dialog wide-dialog"><button class="close-btn" type="button" data-close="cartDialog">×</button><p class="eyebrow">سفارش شما</p><h2>سبد خرید</h2><div id="cartLines"></div><div class="cart-total">جمع کل: <strong id="cartTotal"></strong></div><form id="checkoutForm"><label>نام مشتری<input id="customerName" required maxlength="80" placeholder="نام شما"></label><label>کد تخفیف (اختیاری)<input id="couponInput" maxlength="32" placeholder="مثلاً MISU10"></label>
+      <label>سفارش مربوط به رویداد (اختیاری)<select id="checkoutEvent"><option value="">سفارش عادی</option></select></label>
+      <label id="eventPhoneWrap" class="hidden">شماره تماس ثبت‌نام رویداد<input id="eventRegistrationPhone" inputmode="tel"></label><button class="button button-dark full" type="submit">ثبت سفارش</button><p id="checkoutMessage" class="form-message"></p></form></dialog>
   <dialog id="authDialog" class="dialog">
     <form id="authForm" method="dialog">
       <button class="close-btn" type="button" data-close="authDialog">×</button>
